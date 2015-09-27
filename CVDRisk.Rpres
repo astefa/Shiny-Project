@@ -1,0 +1,487 @@
+CVDRisk App
+========================================================
+author: 
+date: 09/26/2015
+autosize: true
+
+Background
+========================================================
+
+- The Framingham Heart Study is an ongoing longitudinal cardiovascular health study focusing on residents of Framingham, Massachusetts.
+- Data from this study have been used to develop 10-year risk functions for developing cardiovascular disease, most recently in 2008.
+- These risk functions have been good tools for primary care physicians to identify patients who are particularly at risk for developing heart disease.
+
+Motivation
+========================================================
+
+- It is important for the general public to have access to important and informative research results that could impact personal health.
+- As the population has aged, rates of cardiovascular disease have risen.
+- It has thus become that much more important to identify at-risk individuals early and try to prevent cardiovascular disease.
+- Easy access to this risk score will increase the information available to individuals and help them in making health decisions.
+- This is especially important for individuals who may not get routine checkups.
+
+CVD Risk App Design
+========================================================
+
+- Simple layout and easy to use.
+- Few inputs, which are requested in the sidebar panel (age, sex, total cholesterol, HDL cholesterol, systolic blood pressure, whether the individual is being treated for high blood pressure, and smoking status)
+- Outputs calculated 10-year risk of developing cardiovascular disease directly into the main panel using cvdrisk function.
+
+cvdrisk Function Example
+========================================================
+
+- Female smoker, 45 years old, 230 total cholesterol, 55 HDL, 130 SBP, not on blood pressure treatment
+
+```{r, echo = FALSE}
+cvdrisk = function(gen, age, chol, hdl, systolic, trt, smoke){
+    score = 0
+    risk = "0%"
+    
+    if(gen == "Male"){
+        # age
+        if(age <= 34){
+            score = score - 9
+        }
+        else if(age <= 39){
+            score = score - 4
+        }
+        else if(age <= 44){
+            score = score + 0
+        }
+        else if(age <= 49){
+            score = score + 3
+        }
+        else if(age <= 54){
+            score = score + 6
+        }
+        else if(age <= 59){
+            score = score + 8
+        }
+        else if(age <= 64){
+            score = score + 10
+        }
+        else if(age <= 69){
+            score = score + 11
+        }
+        else if(age <= 74){
+            score = score + 12
+        }
+        else if(age <= 79){
+            score = score + 13
+        }
+        
+        # total cholesterol
+        if(chol < 160){
+            score = score + 0
+        }
+        else if(chol < 200){
+            if(age <= 39){
+                score = score + 4
+            }
+            else if(age <= 49){
+                score = score + 3
+            }
+            else if(age <= 59){
+                score = score + 2
+            }
+            else if(age <= 69){
+                score = score + 1
+            }
+            else if(age <= 79){
+                score = score + 0
+            }
+        }
+        else if(chol < 240){
+            if(age <= 39){
+                score = score + 7
+            }
+            else if(age <= 49){
+                score = score + 5
+            }
+            else if(age <= 59){
+                score = score + 3
+            }
+            else if(age <= 69){
+                score = score + 1
+            }
+            else if(age <= 79){
+                score = score + 0
+            }
+        }
+        else if(chol < 280){
+            if(age <= 39){
+                score = score + 9
+            }
+            else if(age <= 49){
+                score = score + 6
+            }
+            else if(age <= 59){
+                score = score + 4
+            }
+            else if(age <= 69){
+                score = score + 2
+            }
+            else if(age <= 79){
+                score = score + 1
+            }
+        }
+        else if(chol >= 280){
+            if(age <= 39){
+                score = score + 11
+            }
+            else if(age <= 49){
+                score = score + 8
+            }
+            else if(age <= 59){
+                score = score + 5
+            }
+            else if(age <= 69){
+                score = score + 3
+            }
+            else if(age <= 79){
+                score = score + 1
+            }
+        }
+        
+        # smoking
+        if(smoke == "Smoker"){
+            if(age <= 39){
+                score = score + 8
+            }
+            else if(age <= 49){
+                score = score + 5
+            }
+            else if(age <= 59){
+                score = score + 3
+            }
+            else if(age <= 69){
+                score = score + 1
+            }
+            else if(age <= 79){
+                score = score + 1
+            }
+        }
+        
+        # hdl
+        if(hdl >= 60){
+            score = score - 1
+        }
+        else if(hdl >= 50){
+            score = score + 0
+        }
+        else if(hdl >= 40){
+            score = score + 1
+        }
+        else if(hdl < 40){
+            score = score + 2
+        }
+        
+        # systolic
+        if(trt == "Yes"){
+            if(systolic < 120){
+                score = score + 0
+            }
+            else if(systolic < 130){
+                score = score + 1
+            }
+            else if(systolic < 140){
+                score = score + 2
+            }
+            else if(systolic < 150){
+                score = score + 2
+            }
+            else if(systolic >= 150){
+                score = score + 3
+            }
+        }
+        else if(trt == "No"){
+            if(systolic < 120){
+                score = score + 0
+            }
+            else if(systolic < 130){
+                score = score + 0
+            }
+            else if(systolic < 140){
+                score = score + 1
+            }
+            else if(systolic < 160){
+                score = score + 1
+            }
+            else if(systolic >= 160){
+                score = score + 2
+            }
+        }
+        
+        # calculate risk
+        if(score < 0){
+            risk = "< 1%"
+        }
+        else if(score < 5){
+            risk = "1%"
+        }
+        else if(score < 7){
+            risk = "2%"
+        }
+        else if(score == 7){
+            risk = "3%"
+        }
+        else if(score == 8){
+            risk = "4%"
+        }
+        else if(score == 9){
+            risk = "5%"
+        }
+        else if(score == 10){
+            risk = "6%"
+        }
+        else if(score == 11){
+            risk = "8%"
+        }
+        else if(score == 12){
+            risk = "10%"
+        }
+        else if(score == 13){
+            risk = "12%"
+        }
+        else if(score == 14){
+            risk = "16%"
+        }
+        else if(score == 15){
+            risk = "20%"
+        }
+        else if(score == 16){
+            risk = "25%"
+        }
+        else if(score >= 17){
+            risk = "> 30%"
+        }
+    }    
+    
+    # program risk score for women
+    else if(gen == "Female"){
+        # age
+        if(age <= 34){
+            score = score - 7
+        }
+        else if(age <= 39){
+            score = score - 3
+        }
+        else if(age <= 44){
+            score = score + 0
+        }
+        else if(age <= 49){
+            score = score + 3
+        }
+        else if(age <= 54){
+            score = score + 6
+        }
+        else if(age <= 59){
+            score = score + 8
+        }
+        else if(age <= 64){
+            score = score + 10
+        }
+        else if(age <= 69){
+            score = score + 12
+        }
+        else if(age <= 74){
+            score = score + 14
+        }
+        else if(age <= 79){
+            score = score + 16
+        }
+        
+        # total cholesterol
+        if(chol < 160){
+            score = score + 0
+        }
+        else if(chol < 200){
+            if(age <= 39){
+                score = score + 4
+            }
+            else if(age <= 49){
+                score = score + 3
+            }
+            else if(age <= 59){
+                score = score + 2
+            }
+            else if(age <= 69){
+                score = score + 1
+            }
+            else if(age <= 79){
+                score = score + 1
+            }
+        }
+        else if(chol < 240){
+            if(age <= 39){
+                score = score + 8
+            }
+            else if(age <= 49){
+                score = score + 6
+            }
+            else if(age <= 59){
+                score = score + 4
+            }
+            else if(age <= 69){
+                score = score + 2
+            }
+            else if(age <= 79){
+                score = score + 1
+            }
+        }
+        else if(chol < 280){
+            if(age <= 39){
+                score = score + 11
+            }
+            else if(age <= 49){
+                score = score + 8
+            }
+            else if(age <= 59){
+                score = score + 5
+            }
+            else if(age <= 69){
+                score = score + 3
+            }
+            else if(age <= 79){
+                score = score + 2
+            }
+        }
+        else if(chol >= 280){
+            if(age <= 39){
+                score = score + 13
+            }
+            else if(age <= 49){
+                score = score + 10
+            }
+            else if(age <= 59){
+                score = score + 7
+            }
+            else if(age <= 69){
+                score = score + 4
+            }
+            else if(age <= 79){
+                score = score + 2
+            }
+        }
+        
+        # smoking
+        if(smoke == "Smoker"){
+            if(age <= 39){
+                score = score + 9
+            }
+            else if(age <= 49){
+                score = score + 7
+            }
+            else if(age <= 59){
+                score = score + 4
+            }
+            else if(age <= 69){
+                score = score + 2
+            }
+            else if(age <= 79){
+                score = score + 1
+            }
+        }
+        
+        # hdl
+        if(hdl >= 60){
+            score = score - 1
+        }
+        else if(hdl >= 50){
+            score = score + 0
+        }
+        else if(hdl >= 40){
+            score = score + 1
+        }
+        else if(hdl < 40){
+            score = score + 2
+        }
+        
+        # systolic
+        if(trt == "Yes"){
+            if(systolic < 120){
+                score = score + 0
+            }
+            else if(systolic < 130){
+                score = score + 3
+            }
+            else if(systolic < 140){
+                score = score + 4
+            }
+            else if(systolic < 160){
+                score = score + 5
+            }
+            else if(systolic >= 160){
+                score = score + 6
+            }
+        }
+        else if(trt == "No"){
+            if(systolic < 120){
+                score = score + 0
+            }
+            else if(systolic < 130){
+                score = score + 1
+            }
+            else if(systolic < 140){
+                score = score + 2
+            }
+            else if(systolic < 160){
+                score = score + 3
+            }
+            else if(systolic >= 160){
+                score = score + 4
+            }
+        }
+        
+        if(score < 9){
+            risk = "< 1%"
+        }
+        else if(score < 13){
+            risk = "1%"
+        }
+        else if(score < 15){
+            risk = "2%"
+        }
+        else if(score == 15){
+            risk = "3%"
+        }
+        else if(score == 16){
+            risk = "4%"
+        }
+        else if(score == 17){
+            risk = "5%"
+        }
+        else if(score == 18){
+            risk = "6%"
+        }
+        else if(score == 19){
+            risk = "8%"
+        }
+        else if(score == 20){
+            risk = "11%"
+        }
+        else if(score == 21){
+            risk = "14%"
+        }
+        else if(score == 22){
+            risk = "17%"
+        }
+        else if(score == 23){
+            risk = "22%"
+        }
+        else if(score == 24){
+            risk = "27%"
+        }
+        else if(score >= 25){
+            risk = "> 30%"
+        }
+    }
+    
+    r = paste("Your 10-year risk of developing cardiovascular disease is ", risk, ".", sep = "")
+    r
+}
+```
+
+```{r}
+cvdrisk("Female", 45, 230, 55, 130, "No", "Smoker")
+```
