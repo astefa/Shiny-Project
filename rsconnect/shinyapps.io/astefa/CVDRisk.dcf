@@ -1,0 +1,10 @@
+name: CVDRisk
+account: astefa
+server: shinyapps.io
+appId: 61958
+bundleId: 274826
+url: https://astefa.shinyapps.io/CVDRisk
+when: 1443323583.75004
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Project Plan.txt
